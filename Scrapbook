@@ -1,0 +1,24 @@
+AWS API Gateway
+* Create new API endpoint /invoicecreated
+* Create new API endpoint /invoicepaid
+
+AWS Lambda
+1) Wire API /invoicecreated  to lambda function CreateNewInvoice()
+         This will create a new entry in SQS queue "NewInvoice" and return HTTP OK
+2) Wire API /invoicepaid to lambda function CreatePaidInvoice()
+           This will create a new entry in SQS queue "PaidInvoice" and return HTTP OK
+3) Create a lambda function InvoiceProcessor() that is triggered on new SQS entry.
+           This will process both queues
+      A) NewInvoice Queue:
+             Pull details from Stripe, Subscription details for the invoice
+             Check if credit entry is in QB, if not, add the entry with all info from stripe
+              Delete the message
+      B) PaidInvoice Queue:
+              Pull details from Stripe, Subscription details for the invoice
+             Check if credit entry is in QB, if not, add the entry with all info from stripe
+              Delete the message
+
+SQS Setup
+   2 Queues:
+       A) "NewInvoice"
+       B)  "PaidInvoice"
